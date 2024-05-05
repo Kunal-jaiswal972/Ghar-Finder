@@ -17,12 +17,10 @@ export default function RootLayout() {
         },
       }}
     >
-      <div className="mb-10">
-        <Navbar />
-        <main className="mt-14">
-          <Outlet />
-        </main>
-      </div>
+      <Navbar />
+      <main className="mt-14">
+        <Outlet />
+      </main>
     </ClerkProvider>
   );
 }

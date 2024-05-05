@@ -1,7 +1,8 @@
+import React from "react";
 import { useAuth } from "@clerk/clerk-react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function ProtectedLayout() {
+export default function ProtectedLayout({ children }) {
   const { isSignedIn, isLoaded, userId } = useAuth();
   const navigate = useNavigate();
 
@@ -13,7 +14,8 @@ export default function ProtectedLayout() {
 
   if (!isSignedIn) {
     navigate("/sign-in");
+    return null;
   }
 
-  return <Outlet />;
+  return <>{children}</>;
 }
