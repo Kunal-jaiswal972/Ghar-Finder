@@ -1,45 +1,72 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+
+import { DEV_MODE, toastOptions } from "@/config/config";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ClerkProvider } from "@clerk/clerk-react";
+
+import { ProtectedLayout, PublicLayout } from "@/layouts/Layout";
 
 import { ThemeProvider } from "@/components/themes/theme-provider";
 import SignInComponent from "@/components/auth/SignInComponent";
 import SignUpComponent from "@/components/auth/SignUpComponent";
 
-import RootLayout from "@/layouts/rootLayout";
-import ProtectedLayout from "@/layouts/ProtectedLayout";
+import CreateListing from "@/pages/CreateListing";
+import HomePage from "@/pages/HomePage";
+import ProfilePage from "@/pages/ProfilePage";
+import ErroPage from "@/pages/ErrorPage";
+import ListingPage from "@/pages/ListingPage";
+import SingleListingPage from "@/pages/SingleListingPage";
 
-import { DEV_MODE, toastOptions } from "@/config/config";
-import Map from "@/components/map/map";
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+});
 
-const queryClient = new QueryClient();
+function AppWrapper() {
+  const navigate = useNavigate();
+  const PUBLISHABLE_KEY = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
-function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ClerkProvider
+      navigate={(to) => navigate(to)}
+      publishableKey={PUBLISHABLE_KEY}
+      appearance={{
+        variables: {
+          colorPrimary: "hsl(263.4, 70%, 50.4%)",
+        },
+      }}
+    >
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <QueryClientProvider client={queryClient}>
           <Routes>
-            <Route path="/" element={<RootLayout />}>
-              <Route
-                index
-                element={
-                  <ProtectedLayout>
-                    <Map/>
-                  </ProtectedLayout>
-                }
-              />
+            <Route path="/" element={<PublicLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="listings" element={<ListingPage />} />
+              <Route path="listings/:id" element={<SingleListingPage />} />
               <Route path="sign-in/*" element={<SignInComponent />} />
               <Route path="sign-up/*" element={<SignUpComponent />} />
             </Route>
+            <Route path="/" element={<ProtectedLayout />}>
+              <Route path="create" element={<CreateListing />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+            <Route path="*" element={<ErroPage />} />
           </Routes>
 
           {DEV_MODE && <ReactQueryDevtools initialIsOpen={false} />}
           <Toaster toastOptions={toastOptions} />
         </QueryClientProvider>
       </ThemeProvider>
+    </ClerkProvider>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppWrapper />
     </BrowserRouter>
   );
 }

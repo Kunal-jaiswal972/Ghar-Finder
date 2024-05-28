@@ -1,7 +1,7 @@
-import React from "react";
+ 
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { Clock, Home, TrendingUp } from "lucide-react";
+import { Contact, Home, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
@@ -20,13 +20,13 @@ const Sidebar = () => {
     },
     {
       icon: TrendingUp,
-      href: "/latest",
-      label: "Latest",
+      href: "#",
+      label: "About",
     },
     {
-      icon: Clock,
-      href: "/recent",
-      label: "Recent",
+      icon: Contact,
+      href: "#",
+      label: "Contact",
     },
   ];
 
