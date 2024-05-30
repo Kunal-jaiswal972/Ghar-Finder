@@ -41,7 +41,7 @@ const userdata = {
 const SingleListingPage = () => {
   return (
     <div className="flex h-full flex-col md:flex-row gap-4">
-      <div className="flex flex-none md:flex-3 h-max md:h-full flex-col overflow-y-scroll">
+      <div className="flex flex-none md:flex-3 h-max md:h-full flex-col overflow-y-scroll no-scrollbar">
         <Slider images={data.images} />
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full md:w-[90%] gap-4">
@@ -78,7 +78,7 @@ const SingleListingPage = () => {
         />
       </div>
 
-      <div className="flex flex-none md:flex-2 h-max md:h-full flex-col gap-4 pb-2 overflow-y-scroll">
+      <div className="flex flex-none md:flex-2 h-max md:h-full flex-col gap-4 pb-2 pr-2 overflow-y-scroll no-scrollbar">
         <div className="flex flex-col bg-orange-100 gap-4 p-3 rounded-md">
           <div className="flex items-center justify-start gap-4 bg-white p-1 rounded-md">
             <img src="/utility.png" className="w-6 h-6" />
@@ -143,7 +143,7 @@ const SingleListingPage = () => {
         </div>
 
         <div className="flex items-center justify-center bg-orange-100 p-2 rounded-md h-[250px] md:h-full">
-          <Map data={[data]} />
+          <Map data={[data]} height="h-[250px]"/>
         </div>
 
         <div className="flex items-center justify-between bg-orange-100 p-3 rounded-md gap-4">

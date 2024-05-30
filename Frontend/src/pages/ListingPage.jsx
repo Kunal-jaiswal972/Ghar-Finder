@@ -86,7 +86,7 @@ const ListingPage = () => {
   return (
     <div className="flex h-full">
       <div className="flex flex-3 h-full">
-        <div className="h-full pr-3 flex flex-col gap-8 overflow-y-scroll">
+        <div className="h-full pr-3 flex flex-col gap-8 overflow-y-scroll no-scrollbar">
           {data.map((listing) => (
             <ListingCard key={listing.id} listing={listing} />
           ))}

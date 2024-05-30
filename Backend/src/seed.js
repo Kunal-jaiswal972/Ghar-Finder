@@ -1,72 +1,76 @@
-import mongoose from "mongoose";
-import Listing from "./models/listings.models.js";
-import User from "./models/user.models.js";
-import { connectToDB } from "./db/conn.js";
+import axios from "axios";
 
-connectToDB();
-
-async function insertDummyData() {
-  try {
-    const dummyUser = await User.findOne({ id: "123" });
-
-    if (!dummyUser) {
-      console.error("Dummy user not found.");
-      return;
+const generateRandomData = (userIds) => {
+  const getRandomString = (length) => {
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += charset.charAt(Math.floor(Math.random() * charset.length));
     }
+    return result;
+  };
 
-    const listings = [
-      {
-        name: "Luxury Apartment",
-        description: "Spacious luxury apartment with great amenities",
-        address: "123 Main St, City",
-        location: {
-          type: "Point",
-          coordinates: [-73.97, 40.77],
-        },
-        price: 2000,
-        images: ["image1.jpg", "image2.jpg"],
-        sell: true,
-        rent: false,
-        user: dummyUser._id,
-      },
-      {
-        name: "Cozy Cottage",
-        description: "Charming cottage in the countryside",
-        address: "456 Elm St, Village",
-        location: {
-          type: "Point",
-          coordinates: [-73.9928, 40.7193],
-        },
-        price: 1500,
-        images: ["image3.jpg", "image4.jpg"],
-        sell: false,
-        rent: true,
-        user: dummyUser._id,
-      },
-      {
-        name: "Cozy Cottage",
-        description: "Charming cottage in the countryside",
-        address: "456 Elm St, Village",
-        location: {
-          type: "Point",
-          coordinates: [-73.9375, 40.8303],
-        },
-        price: 1500,
-        images: ["image3.jpg", "image4.jpg"],
-        sell: false,
-        rent: true,
-        user: dummyUser._id,
-      },
-    ];
+  const getRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
 
-    await Listing.insertMany(listings);
+  const getRandomBoolean = () => {
+    return Math.random() < 0.5;
+  };
 
-    console.log("Dummy data inserted successfully!");
+  const latitude = getRandomNumber(-90, 90);
+  const longitude = getRandomNumber(-180, 180);
+  const userId = userIds[Math.floor(Math.random() * userIds.length)]; // Randomly select a user ID from the array
+  const placeName = getRandomString(10);
+  const description = getRandomString(50);
+  const address = getRandomString(20);
+  const price = getRandomNumber(1000, 5000);
+  const images = [getRandomString(8) + ".jpg", getRandomString(8) + ".jpg"];
+  const sell = getRandomBoolean();
+  const rent = getRandomBoolean();
+
+  return {
+    latitude,
+    longitude,
+    userId,
+    placeName,
+    description,
+    address,
+    price,
+    images,
+    sell,
+    rent,
+  };
+};
+
+const createListing = async (data) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:7000/api/v1/listings",
+      data
+    );
+    console.log("Listing created:", response.data);
   } catch (error) {
-    console.error("Error inserting dummy data:", error);
-  } finally {
-    mongoose.disconnect();
+    console.error("Error creating listing:", error.message);
   }
-}
+};
 
-insertDummyData();
+const seedDatabase = async () => {
+  try {
+    // Fetch all users
+    const response = await axios.get("http://localhost:7000/api/v1/users/");
+    const userIds = response.data.map((user) => user.id);
+
+    // Generate random data and create listings
+    for (let i = 0; i < 10; i++) {
+      const randomData = generateRandomData(userIds);
+      await createListing(randomData);
+    }
+    console.log("Seed completed");
+  } catch (error) {
+    console.error("Seed error:", error.message);
+  }
+};
+
+seedDatabase();
