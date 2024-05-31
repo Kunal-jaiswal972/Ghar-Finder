@@ -1,5 +1,6 @@
 import { createListing } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 export const useCreateListing = () => {
   return useMutation({
@@ -8,13 +9,10 @@ export const useCreateListing = () => {
       console.log("mutate");
     },
     onError: () => {
-      console.log("error");
+      toast.error("Something went wrong! Please try again!");
     },
     onSuccess: () => {
-      console.log("success");
-    },
-    onSettled: () => {
-      console.log("settled");
+      toast.success("Listing created successfully");
     },
   });
 };
