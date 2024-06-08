@@ -1,8 +1,4 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { defaultValues, formSchema } from "@/lib/validations/FormValidation";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -11,26 +7,30 @@ import CustomTextarea from "@/components/form/CustomTextArea";
 import CustomSelect from "@/components/form/CustomSelect";
 import UploadWidget from "@/components/uploadWidget/UploadWidget";
 
+import { cityOptions, propertyOptions, typeOptions } from "@/config/config";
+import { useFormCreateListing } from "@/validations/FormValidation";
+
 import { useCreateListing } from "@/services/mutations";
 import { useGetUserQuery } from "@/services/queries";
 
 const ListingForm = () => {
   const [images, setImages] = useState([]);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: defaultValues,
-  });
-
+  const form = useFormCreateListing();
   const { data: user } = useGetUserQuery();
-
   const CreateListingMutation = useCreateListing();
 
-  const onSubmit = (data) => {
-    const newData = { ...data, userId: user.id, images };
-    console.log(newData);
-    CreateListingMutation.mutate(newData);
-    setImages([]);
+  const onSubmit = async (data) => {
+    const { listingData, listingDetail } = data;
+    listingData.images = images;
+
+    await CreateListingMutation.mutateAsync({
+      userId: user.id,
+      listingData,
+      listingDetail,
+    });
+
+    setImages(["/noimage.png"]);
     form.reset();
   };
 
@@ -41,55 +41,86 @@ const ListingForm = () => {
           <div className="space-y-6">
             <CustomInput
               control={form.control}
-              name="placeName"
+              name="listingData.placeName"
               label="Name of the property"
               placeholder="Enter the name of the property"
             />
             <CustomInput
               control={form.control}
-              name="address"
+              name="listingData.address"
               label="Address"
               placeholder="Enter the address"
             />
+            <CustomSelect
+              control={form.control}
+              name="listingData.city"
+              label="City"
+              options={cityOptions}
+            />
             <CustomTextarea
               control={form.control}
-              name="description"
+              name="listingData.description"
               label="Description"
               placeholder="Describe the property"
             />
             <div className="grid grid-cols-2 gap-4">
               <CustomInput
                 control={form.control}
-                name="latitude"
+                name="listingData.latitude"
                 label="Latitude"
                 placeholder="Enter the latitude"
                 type="number"
               />
               <CustomInput
                 control={form.control}
-                name="longitude"
+                name="listingData.longitude"
                 label="Longitude"
                 placeholder="Enter the longitude"
                 type="number"
               />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <CustomInput
+                control={form.control}
+                name="listingData.bedroom"
+                label="Bedroom"
+                placeholder="No. of bedrooms"
+                type="number"
+              />
+              <CustomInput
+                control={form.control}
+                name="listingData.bathroom"
+                label="Bathroom"
+                placeholder="No. of bathrooms"
+                type="number"
+              />
+            </div>
+
             <CustomInput
               control={form.control}
-              name="price"
+              name="listingData.price"
               label="Price"
               placeholder="Enter the price"
               type="number"
             />
-            <CustomSelect
-              control={form.control}
-              name="type"
-              label="Type"
-              options={[
-                { value: "buy", label: "Buy" },
-                { value: "rent", label: "Rent" },
-              ]}
-            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <CustomSelect
+                control={form.control}
+                name="listingData.type"
+                label="Type"
+                options={typeOptions}
+              />
+              <CustomSelect
+                control={form.control}
+                name="listingData.property"
+                label="Property"
+                options={propertyOptions}
+              />
+            </div>
           </div>
+
           <div className="space-y-6">
             {/* TODO: add cloudinary api and remove images feature */}
             <UploadWidget
@@ -116,8 +147,11 @@ const ListingForm = () => {
           className="w-full bg-green-500 hover:bg-green-600 text-white mt-4"
           size="lg"
           type="submit"
+          loading={CreateListingMutation.isLoading}
         >
-          Create New Listing
+          {CreateListingMutation.isLoading
+            ? "Submiting..."
+            : "Create New Listing"}
         </Button>
       </form>
     </Form>

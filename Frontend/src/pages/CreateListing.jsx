@@ -1,9 +1,8 @@
-import { useState } from "react";
-import ListingForm from "@/components/form/Form";
+import ListingForm from "@/components/form/ListingForm";
 
 const CreateListing = () => {
   return (
-    <div className="w-full h-full overflow-y-scroll no-scrollbar p-2">
+    <div className="w-full p-2 overflow-y-scroll h-full no-scrollbar">
       <h1 className="text-3xl font-semibold mb-8 text-center">
         Create New Listings
       </h1>

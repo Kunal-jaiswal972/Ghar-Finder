@@ -12,13 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
-const options = [
-  { value: "buy", label: "Buy" },
-  { value: "rent", label: "Rent" },
-];
-
-const CustomSelect = ({ control, name, label }) => {
+const CustomSelect = ({ control, name, label, options }) => {
   return (
     <FormField
       control={control}
@@ -33,8 +29,8 @@ const CustomSelect = ({ control, name, label }) => {
               </SelectTrigger>
               <SelectContent>
                 {options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                  <SelectItem key={option} value={option}>
+                    {capitalizeFirstLetter(option)}
                   </SelectItem>
                 ))}
               </SelectContent>

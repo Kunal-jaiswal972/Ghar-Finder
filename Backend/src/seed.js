@@ -21,13 +21,18 @@ const generateRandomData = (userIds) => {
 
   const latitude = getRandomNumber(-90, 90);
   const longitude = getRandomNumber(-180, 180);
-  const userId = userIds[Math.floor(Math.random() * userIds.length)]; // Randomly select a user ID from the array
+  const userId = userIds[Math.floor(Math.random() * userIds.length)];
   const placeName = getRandomString(10);
   const description = getRandomString(100);
   const address = getRandomString(20);
   const price = getRandomNumber(1000, 5000);
   const images = [getRandomString(8) + ".jpg", getRandomString(8) + ".jpg"];
   const type = getRandomBoolean() ? "buy" : "rent";
+  const property = ["apartment", "house", "condo", "land"][
+    Math.floor(Math.random() * 4)
+  ];
+  const bedroom = getRandomNumber(1, 5);
+  const bathroom = getRandomNumber(1, 3);
 
   return {
     latitude,
@@ -38,7 +43,10 @@ const generateRandomData = (userIds) => {
     address,
     price,
     images,
-    type
+    type,
+    property,
+    bathroom,
+    bedroom,
   };
 };
 

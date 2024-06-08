@@ -7,7 +7,7 @@ import Modal from "@/components/modal/Modal";
 import useModal from "@/store/ModalStore";
 
 const Slider = ({ images }) => {
-  const { openModal } = useModal();
+  const openModal = useModal((state) => state.openModal);
 
   const carouselConfig = {
     showArrows: true,
@@ -16,19 +16,17 @@ const Slider = ({ images }) => {
   };
 
   return (
-    <div className="w-full md:w-[90%] mx-auto md:mr-auto md:ml-0 relative">
-      <Carousel {...carouselConfig} showThumbs={images.length > 1 }>
+    <div className="w-full md:w-[90%] mx-auto md:mr-auto md:ml-0 relative mb-4">
+      <Carousel {...carouselConfig} showThumbs={images.length > 1}>
         {images.map((image, idx) => (
-          <img src={image} key={idx} className="rounded-md" />
+          <img src={image} key={idx} className="rounded-md aspect-[16/9]" />
         ))}
       </Carousel>
       <Maximize
         className="absolute right-2 top-2 p-1 bg-white rounded-lg cursor-pointer z-[49]"
-        onClick={openModal}
+        onClick={() => openModal("slider")}
       />
-      <Modal
-        classNames={"max-w-screen-md p-1 flex items-center justify-center"}
-      >
+      <Modal id="slider">
         <Carousel {...carouselConfig}>
           {images.map((image, idx) => (
             <img src={image} key={idx} className="rounded-md" />

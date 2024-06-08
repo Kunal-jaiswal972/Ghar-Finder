@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 import { Card } from "@/components/ui/card";
 import {
   BathIcon,
@@ -18,8 +17,8 @@ const ListingCard = ({ listing }) => {
         className="hidden md:flex flex-2 h-[150px]"
       >
         <img
-          src={listing.images[0]}
-          alt={listing.title}
+          src={listing.images.length > 0 ? listing.images[0] : "/noimage.png"}
+          alt={listing.placeName}
           className="w-full h-full object-cover rounded-md"
           loading="lazy"
         />
@@ -28,11 +27,10 @@ const ListingCard = ({ listing }) => {
       <div className="flex flex-3 flex-col justify-between gap-2">
         <h2 className="text-sm font-semibold">
           <Link to={`/listings/${listing.id}`} className="hover:underline">
-            {listing.title}
+            {listing.placeName}
           </Link>
         </h2>
-        <p className="text-sm flex items-center gap-2">
-          <MapPin />
+        <p className="text-sm items-center">
           <span>{listing.address}</span>
         </p>
         <p className="text-sm font-semibold rounded-sm bg-[#d7cd84] w-max p-1">
@@ -57,7 +55,7 @@ const ListingCard = ({ listing }) => {
 
           <div className="flex justify-between gap-2">
             <Badge variant="outline" className="p-2 cursor-pointer rounded-lg">
-              <Bookmark className="w-4 h-4"/>
+              <Bookmark className="w-4 h-4" />
             </Badge>
             <Badge variant="" className="p-2 cursor-pointer rounded-lg">
               <MessageSquare className="w-4 h-4" />

@@ -7,6 +7,7 @@ import prisma from "./lib/prisma.js";
 import userRoutes from "./routes/user.route.js";
 import webhookRoutes from "./routes/webhook.route.js";
 import listingRoutes from "./routes/listing.route.js";
+import serviceRoutes from "./routes/service.route.js";
 
 config();
 const app = express();
@@ -30,6 +31,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/webhook", webhookRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/listings", listingRoutes);
+app.use("/api/v1/service", serviceRoutes);
 
 app.get("/", (req, res) => {
   res.status(201).json("hi from server");

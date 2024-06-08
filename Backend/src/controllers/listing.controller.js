@@ -1,8 +1,21 @@
 import prisma from "../lib/prisma.js";
 
 export const getListings = async (req, res) => {
+  const query = req.query;
+
   try {
-    const posts = await prisma.listing.findMany();
+    const posts = await prisma.listing.findMany({
+      where: {
+        city: query.city || undefined,
+        type: query.type || undefined,
+        property: query.property || undefined,
+        bedroom: parseInt(query.bedroom) || undefined,
+        price: {
+          gte: parseInt(query.minPrice) || undefined,
+          lte: parseInt(query.maxPrice) || undefined,
+        },
+      },
+    });
 
     res.status(200).json(posts);
   } catch (err) {
@@ -12,11 +25,13 @@ export const getListings = async (req, res) => {
 };
 
 export const getListing = async (req, res) => {
-  const ListingId = req.params.ListingId;
+  const { ListingId } = req.params;
+
   try {
     const listing = await prisma.listing.findUnique({
       where: { id: ListingId },
       include: {
+        listingDetail: true,
         user: {
           select: {
             firstName: true,
@@ -40,7 +55,8 @@ export const getListing = async (req, res) => {
 };
 
 export const createListing = async (req, res) => {
-  const { latitude, longitude, userId, ...rest } = req.body;
+  const { listingData, listingDetail, userId } = req.body;
+  const { latitude, longitude, ...rest } = listingData;
 
   try {
     const user = await prisma.user.findUnique({
@@ -53,10 +69,13 @@ export const createListing = async (req, res) => {
 
     const newListing = await prisma.listing.create({
       data: {
-        ...rest,
+        ...listingData,
         location: {
           type: "Point",
-          coordinates: [longitude, latitude],
+          coordinates: [listingData.longitude, listingData.latitude],
+        },
+        listingDetail: {
+          create: listingDetail,
         },
         userId,
       },
@@ -129,5 +148,55 @@ export const deleteListing = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to delete listing" });
+  }
+};
+
+export const getGeoSpatialQuery = async (req, res) => {
+  const { latitude, longitude, maxDistance = 5000 } = req.query;
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: "Missing latitude or longitude" });
+  }
+
+  try {
+    const geospatialQuery = await prisma.$runCommandRaw({
+      aggregate: "Listing",
+      pipeline: [
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [parseFloat(longitude), parseFloat(latitude)],
+            },
+            distanceField: "distance",
+            maxDistance: parseFloat(maxDistance),
+            spherical: true,
+          },
+        },
+      ],
+      cursor: {},
+    });
+
+    const listings = geospatialQuery.cursor.firstBatch.map((listing) => ({
+      id: listing._id.$oid,
+      placeName: listing.placeName,
+      description: listing.description,
+      address: listing.address,
+      price: listing.price,
+      images: listing.images,
+      type: listing.type,
+      createdAt: listing.createdAt.$date,
+      location: listing.location,
+      bathroom: listing.bathroom,
+      bedrooms: listing.bedroom,
+      property: listing.property,
+      userId: listing.userId.$oid,
+      distance: listing.distance,
+    }));
+
+    res.status(200).json(listings);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to get listings" });
   }
 };
