@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@clerk/clerk-react";
-import { getGeoSpatialListings, getListing, getListings, getUser } from "@/services/api";
+import {
+  getGeoSpatialListings,
+  getListing,
+  getListings,
+  getUser,
+  isSaved,
+} from "@/services/api";
 
 export const useGetUserQuery = () => {
   const { userId } = useAuth();
@@ -34,5 +40,15 @@ export const useGetListingQuery = (ListingId) => {
   return useQuery({
     queryKey: ["listings", { ListingId }],
     queryFn: () => getListing(ListingId),
+  });
+};
+
+export const useIsListingSaved = ({ userId, listingId }) => {
+  const { isSignedIn } = useAuth();
+
+  return useQuery({
+    queryKey: ["isListingSaved", { userId, listingId }],
+    queryFn: () => isSaved(userId, listingId),
+    enabled: isSignedIn,
   });
 };

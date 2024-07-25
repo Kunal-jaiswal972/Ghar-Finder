@@ -1,56 +1,75 @@
- 
 import { useLocation, useNavigate } from "react-router-dom";
+import { LogOutIcon } from "lucide-react";
 
-import { Contact, Home, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { navItems } from "@/config/config";
+
+import { Button } from "@/components/ui/button";
+import { SignOutButton, useUser, UserButton } from "@clerk/clerk-react";
 
 const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { isSignedIn, user } = useUser();
 
-  const onNavigate = (href) => {
-    navigate(href);
-  };
-
-  const routes = [
-    {
-      icon: Home,
-      href: "/",
-      label: "Home",
-    },
-    {
-      icon: TrendingUp,
-      href: "#",
-      label: "About",
-    },
-    {
-      icon: Contact,
-      href: "#",
-      label: "Contact",
-    },
+  const signOutOptions = [
+    { title: "Sign In", link: "/sign-in" },
+    { title: "Sign Up", link: "/sign-up" },
   ];
 
   return (
     <div className="space-y-4 flex flex-col h-full text-primary bg-secondary">
-      <div className="p-3 flex flex-1 justify-center">
+      <div className="p-3 flex flex-1 justify-between flex-col">
         <div className="space-y-2">
-          {routes.map((route) => (
-            <div
-              onClick={() => onNavigate(route.href)}
-              key={route.href}
-              className={cn(
-                "text-muted-foreground text-xs group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
-                pathname === route.href && "bg-primary/10 text-primary"
-              )}
-            >
-              <div className="flex flex-col gap-y-2 items-center flex-1">
-                <route.icon className="h-5 w-5" />
-                {route.label}
-              </div>
+          {isSignedIn ? (
+            <div className="flex items-center gap-2 mb-5">
+              <UserButton afterSignOutUrl="/" />
+              {user.firstName}
             </div>
+          ) : (
+            signOutOptions.map((items) => (
+              <SideBarBtns
+                key={items.title}
+                items={items}
+                pathname={pathname}
+                onNavigate={navigate}
+              />
+            ))
+          )}
+
+          {navItems.map((items) => (
+            <SideBarBtns
+              key={items.title}
+              items={items}
+              pathname={pathname}
+              onNavigate={navigate}
+            />
           ))}
         </div>
+
+        {isSignedIn && (
+          <SignOutButton signOutOptions={{ redirectUrl: "/sign-in" }}>
+            <Button variant="destructive" className="space-x-2">
+              <span>Log Out</span>
+              <LogOutIcon />
+            </Button>
+          </SignOutButton>
+        )}
       </div>
+    </div>
+  );
+};
+
+const SideBarBtns = ({ items, onNavigate, pathname }) => {
+  return (
+    <div
+      onClick={() => onNavigate(items.link)}
+      className={cn(
+        "text-muted-foreground text-xs group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
+        pathname === items.link && "bg-primary/10 text-primary"
+      )}
+    >
+      {items.title}
     </div>
   );
 };

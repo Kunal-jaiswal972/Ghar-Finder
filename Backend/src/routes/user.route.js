@@ -9,7 +9,7 @@ import {
 const router = Router();
 
 router.get("/", getUsers);
-router.post("/isSaved", checkSave);
+router.get("/isSaved", checkSave);
 router.post("/save", saveListing);
 router.get("/:clerkId", getUser);
 

@@ -53,14 +53,15 @@ const ListingCard = ({ listing }) => {
             </Badge>
           </div>
 
-          <div className="flex justify-between gap-2">
+          {/* !TODO Implement later */}
+          {/* <div className="flex justify-between gap-2">
             <Badge variant="outline" className="p-2 cursor-pointer rounded-lg">
               <Bookmark className="w-4 h-4" />
             </Badge>
             <Badge variant="" className="p-2 cursor-pointer rounded-lg">
               <MessageSquare className="w-4 h-4" />
             </Badge>
-          </div>
+          </div> */}
         </div>
       </div>
     </Card>

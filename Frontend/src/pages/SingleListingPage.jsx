@@ -1,14 +1,13 @@
+import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 
 import {
-  MapPin,
   Ruler,
   BathIcon,
   BedDouble,
   School,
   Bus,
   TrainFront,
-  Bookmark,
   MessageSquare,
 } from "lucide-react";
 import Map from "@/components/map/Map";
@@ -16,47 +15,16 @@ import Slider from "@/components/slider/Slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
-import { useParams } from "react-router-dom";
 import { useGetListingQuery, useGetUserQuery } from "@/services/queries";
-import { useIsListingSaved, useSaveListing } from "@/services/mutations";
-import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import SaveBtn from "@/components/listingComponents/SaveBtn";
 
 const SingleListingPage = () => {
-  const [saved, setSaved] = useState(false);
-
   const { id } = useParams();
-  const { data, isLoading, isError } = useGetListingQuery(id);
+  const { data: user, isLoading: isLoadingUser } = useGetUserQuery();
+  const { data, isLoading: isLoadingListing, isError } = useGetListingQuery(id);
 
-  const { data: user } = useGetUserQuery();
-  const saveListingMutation = useSaveListing();
-  const isSavedMutation = useIsListingSaved();
-
-  useEffect(() => {
-    checkSaved();
-    console.log(saved);
-  }, []);
-
-  const checkSaved = async () => {
-    if (!user || !user.id) return;
-    const save = await isSavedMutation.mutateAsync({
-      userId: user.id,
-      listingId: id,
-    });
-    setSaved(save);
-  };
-
-  const handleSave = async () => {
-    if (user === undefined || !user || !user.id || !user.clerkId) {
-      toast.error("You need to sign in to save listing!!");
-      return;
-    }
-
-    saveListingMutation.mutateAsync({ userId: user.id, listingId: id });
-  };
-
-  if (isLoading) return "Loading...";
-  if (isError) return "error...";
+  if (isLoadingListing || isLoadingUser) return <p>Loading...</p>;
+  if (isError) return <p>Error...</p>;
 
   return (
     <div className="flex h-full flex-col md:flex-row gap-4">
@@ -189,17 +157,7 @@ const SingleListingPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 bg-orange-100 p-3 rounded-md gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex gap-2"
-            onClick={handleSave}
-            disabled={!user || !user.id}
-          >
-            <Bookmark fill={saved ? "#fece51" : "white"} />
-            <span className="block md:hidden">Save the place</span>
-            <span className="hidden md:block">Save</span>
-          </Button>
+          <SaveBtn user={user} listingId={id}/>
           <Button
             variant="outline"
             size="sm"

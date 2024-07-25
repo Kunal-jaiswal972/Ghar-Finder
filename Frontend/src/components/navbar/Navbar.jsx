@@ -24,13 +24,13 @@ const Navbar = () => {
         </Link>
         {navItems.map((item) => (
           <Link
-            to="#"
-            key={item}
+            to={item.link}
+            key={item.title}
             className={`${buttonVariants({
               variant: "link",
             })} hidden sm:block`}
           >
-            {item}
+            {item.title}
           </Link>
         ))}
       </div>

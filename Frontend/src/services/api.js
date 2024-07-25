@@ -48,8 +48,9 @@ export const saveListing = async (payload) => {
   return data;
 };
 
-export const isSaved = async (payload) => {
-  const { data } = await axiosInstance.post("/users/isSaved", payload);
-  console.log('data is saved', data);
+export const isSaved = async (userId, listingId) => {
+  const { data } = await axiosInstance.get(
+    `/users/isSaved?userId=${userId}&listingId=${listingId}`
+  );
   return data;
 };

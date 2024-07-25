@@ -88,7 +88,7 @@ export const saveListing = async (req, res) => {
 };
 
 export const checkSave = async (req, res) => {
-  const { userId, listingId } = req.body;
+  const { userId, listingId } = req.query;
   try {
     const user = await prisma.user.findUnique({
       where: {

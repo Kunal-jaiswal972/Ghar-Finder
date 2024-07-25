@@ -29,6 +29,8 @@ export const useCreateListing = () => {
 };
 
 export const useSaveListing = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data) => saveListing(data),
     onMutate: () => {
@@ -38,23 +40,20 @@ export const useSaveListing = () => {
       console.error("useSaveListing", err);
       toast.error("Something went wrong!", { id: "saveListingToast" });
     },
-    onSuccess: (data) => {
+    onSuccess: async (data, args) => {
       toast.success(
         data.isSaved
           ? "Listing saved in saved list"
           : "Listing removed from saved list",
         { id: "saveListingToast" }
       );
-    },
-  });
-};
 
-export const useIsListingSaved = () => {
-  return useMutation({
-    mutationFn: (data) => isSaved(data),
-    onError: (err) => {
-      console.error("useIsListingSaved", err);
-      toast.error("Something went wrong!", { id: "isSaved" });
+      await queryClient.invalidateQueries({
+        queryKey: [
+          "isListingSaved",
+          { userId: args.userId, listingId: args.listingId },
+        ],
+      });
     },
   });
 };
