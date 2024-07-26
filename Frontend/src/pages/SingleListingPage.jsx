@@ -17,14 +17,15 @@ import { Button } from "@/components/ui/button";
 
 import { useGetListingQuery, useGetUserQuery } from "@/services/queries";
 import SaveBtn from "@/components/listingComponents/SaveBtn";
+import Loader from "@/components/Loader";
 
 const SingleListingPage = () => {
   const { id } = useParams();
   const { data: user, isLoading: isLoadingUser } = useGetUserQuery();
   const { data, isLoading: isLoadingListing, isError } = useGetListingQuery(id);
 
-  if (isLoadingListing || isLoadingUser) return <p>Loading...</p>;
-  if (isError) return <p>Error...</p>;
+  if (isLoadingListing || isLoadingUser) return <Loader/>;
+  if (isError) return <img src="./notFound.svg" />;
 
   return (
     <div className="flex h-full flex-col md:flex-row gap-4">

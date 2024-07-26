@@ -13,8 +13,8 @@ export const createListing = async (listing) => {
   return data;
 };
 
-export const getListings = async () => {
-  const { data } = await axiosInstance.get("/listings");
+export const getListings = async (query) => {
+  const { data } = await axiosInstance.get("/listings?" + query);
   return data;
 };
 

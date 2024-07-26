@@ -7,6 +7,8 @@ import {
   getUser,
   isSaved,
 } from "@/services/api";
+import { useLocation } from "react-router-dom";
+import { useMemo } from "react";
 
 export const useGetUserQuery = () => {
   const { userId } = useAuth();
@@ -30,9 +32,12 @@ export const useGetGeoSpatialListingsQuery = (
 };
 
 export const useGetListingsQuery = () => {
+  const { search } = useLocation();
+  const queryParams = search.split("?")[1];
+
   return useQuery({
-    queryKey: ["listings"],
-    queryFn: getListings,
+    queryKey: ["listings", { queryParams }],
+    queryFn: () => getListings(queryParams),
   });
 };
 

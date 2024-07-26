@@ -17,6 +17,8 @@ export const getListings = async (req, res) => {
       },
     });
 
+    console.log(posts)
+
     res.status(200).json(posts);
   } catch (err) {
     console.log(err);

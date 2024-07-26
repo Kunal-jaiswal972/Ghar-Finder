@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { SignOutButton, useUser, UserButton } from "@clerk/clerk-react";
 
 const Sidebar = () => {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { isSignedIn, user } = useUser();
 
   const signOutOptions = [
