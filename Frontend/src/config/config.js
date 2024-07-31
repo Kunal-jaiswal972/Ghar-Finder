@@ -1,6 +1,6 @@
 export const DEV_MODE = false;
 export const toastOptions = { duration: 4000, position: "top-center" };
-export const initialZoomLvl = 8;
+export const initialZoomLvl = 5;
 export const animationDuration = 2;
 
 export const cityOptions = ["london", "delhi", "new york"];
@@ -9,16 +9,16 @@ export const propertyOptions = ["apartment", "house", "condo", "land"];
 
 export const navItems = [
   {
-    title: "Home",
-    link: "/",
+    title: "Listings",
+    link: "/listings",
   },
   {
-    title: "About",
-    link: "/about",
+    title: "New Listing",
+    link: "/create",
   },
   {
-    title: "Contacts",
-    link: "/contacts",
+    title: "Profile",
+    link: "/profile",
   },
 ];
 export const sideBarItems = [

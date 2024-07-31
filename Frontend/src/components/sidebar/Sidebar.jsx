@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 import { navItems } from "@/config/config";
 
 import { Button } from "@/components/ui/button";
-import { SignOutButton, useUser, UserButton } from "@clerk/clerk-react";
+import { SignOutButton, UserButton } from "@clerk/clerk-react";
+import { useGetUserQuery } from "@/services/queries";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn, user } = useGetUserQuery();
 
   const signOutOptions = [
     { title: "Sign In", link: "/sign-in" },

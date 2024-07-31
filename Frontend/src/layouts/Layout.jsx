@@ -1,8 +1,9 @@
-import { useAuth } from "@clerk/clerk-react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import Loader from "@/components/Loader";
 import Navbar from "@/components/navbar/Navbar";
+
+import { useGetUserQuery } from "@/services/queries";
 
 export function PublicLayout() {
   return (
@@ -16,10 +17,18 @@ export function PublicLayout() {
 }
 
 export const ProtectedLayout = () => {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isLoading, isSignedIn } = useGetUserQuery();
+  const location = useLocation();
 
-  if (!isLoaded) return <Loader />;
-  if (!isSignedIn) return <Navigate to="/sign-in" />;
+  if (isLoading) return <Loader />;
+  if (!isSignedIn)
+    return (
+      <Navigate
+        to="/sign-in"
+        replace={true}
+        state={{ from: location.pathname }}
+      />
+    );
 
   return <PublicLayout />;
 };

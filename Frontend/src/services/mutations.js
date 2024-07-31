@@ -7,7 +7,7 @@ export const useCreateListing = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  return useMutation({
+  const { mutateAsync: createNewListing, isLoading } = useMutation({
     mutationFn: (data) => createListing(data),
     onMutate: () => {
       toast.loading("Submitting...", { id: "createListingToast" });
@@ -26,12 +26,14 @@ export const useCreateListing = () => {
       navigate("/listings");
     },
   });
+
+  return { createNewListing, isLoading };
 };
 
 export const useSaveListing = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const { mutate: save, isLoading: saving } = useMutation({
     mutationFn: (data) => saveListing(data),
     onMutate: () => {
       toast.loading("Saving...", { id: "saveListingToast" });
@@ -56,4 +58,6 @@ export const useSaveListing = () => {
       });
     },
   });
+
+  return { save, saving };
 };

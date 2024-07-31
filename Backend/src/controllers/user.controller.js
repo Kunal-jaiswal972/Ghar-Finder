@@ -12,6 +12,7 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   const clerkId = req.params.clerkId;
+
   try {
     const user = await prisma.user.findUnique({
       where: { clerkId },

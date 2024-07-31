@@ -21,10 +21,10 @@ import Loader from "@/components/Loader";
 
 const SingleListingPage = () => {
   const { id } = useParams();
-  const { data: user, isLoading: isLoadingUser } = useGetUserQuery();
-  const { data, isLoading: isLoadingListing, isError } = useGetListingQuery(id);
+  const { user, isLoading } = useGetUserQuery();
+  const { listing, isListingLoading, isError } = useGetListingQuery(id);
 
-  if (isLoadingListing || isLoadingUser) return <Loader/>;
+  if (isListingLoading || isLoading) return <Loader />;
   if (isError) return <img src="./notFound.svg" />;
 
   return (
@@ -32,47 +32,47 @@ const SingleListingPage = () => {
       <div className="flex flex-none md:flex-3 h-max md:h-full pb-10 flex-col overflow-y-scroll no-scrollbar">
         <Slider
           images={
-            data.images.length === 5
-              ? data.images
+            listing.images.length === 5
+              ? listing.images
               : [
-                  ...data.images,
-                  ...Array(5 - data.images.length).fill("/noimage.png"),
+                  ...listing.images,
+                  ...Array(5 - listing.images.length).fill("/noimage.png"),
                 ]
           }
         />
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full md:w-[90%] gap-4">
           <div className="flex flex-col justify-between gap-4">
-            <span className="text-md font-bold">{data.placeName}</span>
-            <span className="text-sm">{data.address}</span>
+            <span className="text-md font-bold">{listing.placeName}</span>
+            <span className="text-sm">{listing.address}</span>
             <div className="flex gap-4">
               <span className="text-sm font-semibold rounded-sm bg-[#d7cd84] w-max p-2">
-                $ {data.price}
+                $ {listing.price}
               </span>
               <span className="text-sm font-semibold rounded-sm bg-[#d7cd84] w-max p-2">
-                {data.type}
+                {listing.type}
               </span>
               <span className="text-sm font-semibold rounded-sm bg-[#d7cd84] w-max p-2">
-                {data.property}
+                {listing.property}
               </span>
             </div>
           </div>
 
           <div className="h-24 w-24 flex flex-row md:flex-col justify-between items-center bg-orange-100 p-3 rounded-md text-center gap-2">
             <Avatar>
-              <AvatarImage src={data.user.profile_pic} />
+              <AvatarImage src={listing.user.profile_pic} />
               <AvatarFallback>
                 <img src="/noavatar.jpg" alt="no avatar" />
               </AvatarFallback>
             </Avatar>
-            <span className="text-base">{data.user.userName}</span>
+            <span className="text-base">{listing.user.userName}</span>
           </div>
         </div>
 
         <div
           className="text-sm mt-4 w-full md:w-[90%] text-justify"
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(data.description),
+            __html: DOMPurify.sanitize(listing.description),
           }}
         />
       </div>
@@ -83,14 +83,16 @@ const SingleListingPage = () => {
             <img src="/utility.png" className="w-6 h-6" />
             <div className="leading-none">
               <p className="text-sm font-semibold">Utilities</p>
-              <span className="text-xs">{data.listingDetail.utilities}</span>
+              <span className="text-xs">{listing.listingDetail.utilities}</span>
             </div>
           </div>
           <div className="flex items-center justify-start gap-4 bg-white p-1 rounded-md">
             <img src="/pet.png" className="w-6 h-6" />
             <div className="leading-none">
               <p className="text-sm font-semibold">Pet Policy</p>
-              <span className="text-xs">Pets are {data.listingDetail.pet}</span>
+              <span className="text-xs">
+                Pets are {listing.listingDetail.pet}
+              </span>
             </div>
           </div>
           <div className="flex items-center justify-start gap-4 bg-white p-1 rounded-md">
@@ -98,7 +100,7 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">Income Policy</p>
               <span className="text-xs">
-                {data.listingDetail.income || "N/A"}
+                {listing.listingDetail.income || "N/A"}
               </span>
             </div>
           </div>
@@ -107,20 +109,22 @@ const SingleListingPage = () => {
         <div className="flex justify-between bg-orange-100 p-3 rounded-md">
           <div className="flex items-center gap-2 bg-white p-1 rounded-md">
             <Ruler />
-            <p className="text-xs">{data.listingDetail.size || "N/A"} sqft</p>
+            <p className="text-xs">
+              {listing.listingDetail.size || "N/A"} sqft
+            </p>
           </div>
           <div className="flex items-center gap-2 bg-white p-1 rounded-md">
             <BathIcon />
             <p className="text-xs">
-              {data.bathroom + " "}
-              {data.bathroom === 1 ? "bath" : "baths"}
+              {listing.bathroom + " "}
+              {listing.bathroom === 1 ? "bath" : "baths"}
             </p>
           </div>
           <div className="flex items-center gap-2 bg-white p-1 rounded-md">
             <BedDouble />
             <p className="text-xs">
-              {data.bedroom + " "}
-              {data.bedroom === 1 ? "bed" : "beds"}
+              {listing.bedroom + " "}
+              {listing.bedroom === 1 ? "bed" : "beds"}
             </p>
           </div>
         </div>
@@ -131,7 +135,7 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">School</p>
               <span className="text-xs">
-                {data.listingDetail.school || "N/A"}
+                {listing.listingDetail.school || "N/A"}
               </span>
             </div>
           </div>
@@ -139,7 +143,9 @@ const SingleListingPage = () => {
             <Bus />
             <div className="leading-none">
               <p className="text-sm font-semibold">Bus Stop</p>
-              <span className="text-xs">{data.listingDetail.bus || "N/A"}</span>
+              <span className="text-xs">
+                {listing.listingDetail.bus || "N/A"}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-2 bg-white p-1 rounded-md">
@@ -147,29 +153,31 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">Railway</p>
               <span className="text-xs">
-                {data.listingDetail.railway || "N/A"}
+                {listing.listingDetail.railway || "N/A"}
               </span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-center bg-orange-100 p-2 rounded-md h-[250px] md:h-full">
-          <Map data={[data]} height="h-[250px]" />
+          <Map data={[listing]} height="h-[250px]" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 bg-orange-100 p-3 rounded-md gap-4">
-          <SaveBtn user={user} listingId={id}/>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex gap-2"
-            disabled={!user || !user.id}
-          >
-            <MessageSquare />
-            <span className="block md:hidden">Send a message</span>
-            <span className="hidden md:block">Message</span>
-          </Button>
-        </div>
+        {user && (
+          <div className="grid grid-cols-1 md:grid-cols-2 bg-orange-100 p-3 rounded-md gap-4">
+            <SaveBtn user={user} listingId={id} />
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex gap-2"
+              disabled={!user || !user.id}
+            >
+              <MessageSquare />
+              <span className="block md:hidden">Send a message</span>
+              <span className="hidden md:block">Message</span>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -6,19 +6,19 @@ import { useSaveListing } from "@/services/mutations";
 import { useIsListingSaved } from "@/services/queries";
 
 const SaveBtn = ({ user, listingId }) => {
-  const { data, isLoading } = useIsListingSaved({
-    userId: user.id,
+  const { saveInfo, isLoading } = useIsListingSaved({
+    userId: user?.id,
     listingId,
   });
 
-  const saveListingMutation = useSaveListing();
+  const { save, saving } = useSaveListing();
 
   const handleSave = async () => {
     if (user === undefined || !user || !user.id || !user.clerkId) {
       toast.error("You need to sign in to save listing!!");
       return;
     }
-    saveListingMutation.mutateAsync({ userId: user.id, listingId });
+    save({ userId: user.id, listingId });
   };
 
   if (isLoading) return "Loading";
@@ -29,10 +29,10 @@ const SaveBtn = ({ user, listingId }) => {
       size="sm"
       className="flex gap-2"
       onClick={handleSave}
-      disabled={!user || !user.id}
+      loading={saving}
     >
-      <Bookmark fill={data.isSaved ? "#fece51" : "white"} />
-      {data.isSaved ? (
+      <Bookmark fill={saveInfo.isSaved ? "#fece51" : "white"} />
+      {saveInfo.isSaved ? (
         <span>Saved</span>
       ) : (
         <p>

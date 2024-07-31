@@ -14,7 +14,7 @@ const ListingCard = ({ listing }) => {
     <Card className="flex gap-4 border-none shadow-none">
       <Link
         to={`/listings/${listing.id}`}
-        className="hidden md:flex flex-2 h-[150px]"
+        className="flex flex-2 h-[150px]"
       >
         <img
           src={listing.images.length > 0 ? listing.images[0] : "/noimage.png"}

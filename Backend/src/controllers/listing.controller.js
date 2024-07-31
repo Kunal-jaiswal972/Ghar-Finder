@@ -15,9 +15,10 @@ export const getListings = async (req, res) => {
           lte: parseInt(query.maxPrice) || undefined,
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-
-    console.log(posts)
 
     res.status(200).json(posts);
   } catch (err) {

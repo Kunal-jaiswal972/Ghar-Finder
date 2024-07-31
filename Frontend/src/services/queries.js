@@ -8,16 +8,31 @@ import {
   isSaved,
 } from "@/services/api";
 import { useLocation } from "react-router-dom";
-import { useMemo } from "react";
 
 export const useGetUserQuery = () => {
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
 
-  return useQuery({
-    queryKey: ["user", { userId }],
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["user"],
     queryFn: () => getUser(userId),
-    enabled: !!userId,
+    enabled: !!userId && isLoaded,
   });
+
+  if (userId === null)
+    return {
+      user: null,
+      isLoading: false,
+      isSignedIn: false,
+      isError: false,
+      error: null,
+    };
+
+  return { user, isLoading, isSignedIn: !!user, isError, error };
 };
 
 export const useGetGeoSpatialListingsQuery = (
@@ -33,27 +48,50 @@ export const useGetGeoSpatialListingsQuery = (
 
 export const useGetListingsQuery = () => {
   const { search } = useLocation();
-  const queryParams = search.split("?")[1];
+  const queryParams = search ? search.substring(1) : "";
 
-  return useQuery({
+  const {
+    data: listings,
+    isLoading: isListingsLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["listings", { queryParams }],
     queryFn: () => getListings(queryParams),
   });
+
+  return { listings, isListingsLoading, isError, error };
 };
 
 export const useGetListingQuery = (ListingId) => {
-  return useQuery({
+  const {
+    data: listing,
+    isLoading: isListingLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["listings", { ListingId }],
     queryFn: () => getListing(ListingId),
   });
+
+  return { listing, isListingLoading, isError, error };
 };
 
 export const useIsListingSaved = ({ userId, listingId }) => {
   const { isSignedIn } = useAuth();
 
-  return useQuery({
+  const { data: saveInfo, isLoading } = useQuery({
     queryKey: ["isListingSaved", { userId, listingId }],
     queryFn: () => isSaved(userId, listingId),
     enabled: isSignedIn,
   });
+
+  if (!isSignedIn) return { saveInfo: null, isLoading: false };
+
+  return {
+    saveInfo,
+    isLoading,
+  };
 };
+
+

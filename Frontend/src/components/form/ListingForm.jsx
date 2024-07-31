@@ -17,14 +17,14 @@ const ListingForm = () => {
   const [images, setImages] = useState([]);
 
   const form = useFormCreateListing();
-  const { data: user } = useGetUserQuery();
-  const CreateListingMutation = useCreateListing();
+  const { user } = useGetUserQuery();
+  const { createNewListing, isLoading } = useCreateListing();
 
   const onSubmit = async (data) => {
     const { listingData, listingDetail } = data;
     listingData.images = images;
 
-    await CreateListingMutation.mutateAsync({
+    await createNewListing({
       userId: user.id,
       listingData,
       listingDetail,
@@ -147,11 +147,9 @@ const ListingForm = () => {
           className="w-full bg-green-500 hover:bg-green-600 text-white mt-4"
           size="lg"
           type="submit"
-          loading={CreateListingMutation.isLoading}
+          loading={isLoading}
         >
-          {CreateListingMutation.isLoading
-            ? "Submiting..."
-            : "Create New Listing"}
+          {isLoading ? "Submiting..." : "Create New Listing"}
         </Button>
       </form>
     </Form>
