@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/clerk-react";
 import {
   getGeoSpatialListings,
   getListing,
   getListings,
+  getProfile,
   getUser,
   isSaved,
 } from "@/services/api";
@@ -94,4 +95,12 @@ export const useIsListingSaved = ({ userId, listingId }) => {
   };
 };
 
+export const useProfileLisitngs = (userId, isSignedIn) => {
+  const { data: profileListings, isLoading: isProfileLoading } = useQuery({
+    queryKey: ["profile", { userId }],
+    queryFn: () => getProfile(userId),
+    enabled: isSignedIn,
+  });
 
+  return { profileListings, isProfileLoading };
+};

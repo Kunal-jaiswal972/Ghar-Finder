@@ -54,3 +54,8 @@ export const isSaved = async (userId, listingId) => {
   );
   return data;
 };
+
+export const getProfile = async (userId) => {
+  const { data } = await axiosInstance.get(`/users/profile/${userId}`);
+  return data;
+};

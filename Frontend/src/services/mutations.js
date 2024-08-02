@@ -18,11 +18,15 @@ export const useCreateListing = () => {
         id: "createListingToast",
       });
     },
-    onSuccess: async () => {
+    onSuccess: async (_, args) => {
+      console.log(args);
       toast.success("Listing created successfully", {
         id: "createListingToast",
       });
       await queryClient.invalidateQueries({ queryKey: ["listings"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["profile", { userId: args.userId }],
+      });
       navigate("/listings");
     },
   });
@@ -55,6 +59,9 @@ export const useSaveListing = () => {
           "isListingSaved",
           { userId: args.userId, listingId: args.listingId },
         ],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["profile", { userId: args.userId }],
       });
     },
   });

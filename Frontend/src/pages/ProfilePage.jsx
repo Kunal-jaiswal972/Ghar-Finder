@@ -1,12 +1,22 @@
-import { useGetUserQuery } from "@/services/queries";
+import ListingCard from "@/components/card/ListingCard";
+import Loader from "@/components/Loader";
+import { Button } from "@/components/ui/button";
+import { useGetUserQuery, useProfileLisitngs } from "@/services/queries";
 import { MailIcon, UserIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
-  const { user } = useGetUserQuery();
+  const { user, isSignedIn } = useGetUserQuery();
+  const { profileListings, isProfileLoading } = useProfileLisitngs(
+    user.id,
+    isSignedIn
+  );
+
+  if (isProfileLoading) return <Loader />;
 
   return (
     <div className="flex h-full flex-col md:flex-row p-4 md:p-0">
-      <div className="flex flex-none md:flex-3 h-max md:h-full pb-10 flex-col overflow-y-scroll no-scrollbar space-y-10">
+      <div className="flex flex-none md:flex-3 h-max md:h-full pb-10 pr-10 flex-col overflow-y-scroll no-scrollbar space-y-10">
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-bold">User Information</h2>
           <div className="flex items-center gap-10">
@@ -27,16 +37,39 @@ const ProfilePage = () => {
         </section>
 
         <section>
-          <h2 className="text-xl font-bold">My Posts</h2>
-          {[].length === 0 ? (
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold mb-4">My Posts</h2>
+            <Button>
+              <Link to="/create">New Listing</Link>
+            </Button>
+          </div>
+          {profileListings.userListings.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
               <img src="./noresults.png" className="w-[400px] h-[400px]" />
               <p className="font-bold text-slate-700">No Results Found</p>
             </div>
           ) : (
-            [].map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))
+            <div className="h-full w-full pr-3 flex flex-col gap-8 overflow-y-scroll no-scrollbar">
+              {profileListings.userListings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold mb-4">Saved Posts</h2>
+          {profileListings.savedListings.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full">
+              <img src="./noresults.png" className="w-[400px] h-[400px]" />
+              <p className="font-bold text-slate-700">No Results Found</p>
+            </div>
+          ) : (
+            <div className="h-full w-full pr-3 flex flex-col gap-8 overflow-y-scroll no-scrollbar">
+              {profileListings.savedListings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
           )}
         </section>
       </div>

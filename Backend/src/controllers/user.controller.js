@@ -128,3 +128,29 @@ export const checkSave = async (req, res) => {
       .json({ message: "Something went wrong while querying saved listings" });
   }
 };
+
+export const getProfileListings = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userListings = await prisma.listing.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const saved = await prisma.savedListing.findMany({
+      where: { userId },
+      include: { listing: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const savedListings = saved.map((item) => item.listing);
+
+    res
+      .status(200)
+      .json({ userListings: userListings.slice(0, 10), savedListings });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to get user!" });
+  }
+};
