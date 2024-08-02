@@ -19,7 +19,6 @@ export const useCreateListing = () => {
       });
     },
     onSuccess: async (_, args) => {
-      console.log(args);
       toast.success("Listing created successfully", {
         id: "createListingToast",
       });

@@ -49,7 +49,7 @@ const ListingDetailSchema = z.object({
     .enum(["Owner is responsible", "Tenant is responsible", "Shared"])
     .default("Owner is responsible")
     .optional(),
-  pet: z.enum(["Allowed", "Not allowed"]).default("Not allowed").optional(),
+  pet: z.enum(["allowed", "not allowed"]).default("not allowed").optional(),
   income: z.string().nullable().optional(),
   size: z.number().nullable().optional(),
   school: z.number().nullable().optional(),
@@ -78,7 +78,7 @@ const defaultValues = {
   },
   listingDetail: {
     utilities: "Tenant is responsible",
-    pet: "Not allowed",
+    pet: "not allowed",
     income: null,
     size: null,
     school: null,

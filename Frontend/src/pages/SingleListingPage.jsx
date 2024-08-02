@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useGetListingQuery, useGetUserQuery } from "@/services/queries";
 import SaveBtn from "@/components/listingComponents/SaveBtn";
 import Loader from "@/components/Loader";
+import Error from "@/components/Error";
 
 const SingleListingPage = () => {
   const { id } = useParams();
@@ -25,7 +26,7 @@ const SingleListingPage = () => {
   const { listing, isListingLoading, isError } = useGetListingQuery(id);
 
   if (isListingLoading || isLoading) return <Loader />;
-  if (isError) return <img src="./notFound.svg" />;
+  if (isError) return <Error />;
 
   return (
     <div className="flex h-full flex-col md:flex-row gap-4">
@@ -106,21 +107,21 @@ const SingleListingPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-between bg-orange-100 p-3 rounded-md">
-          <div className="flex items-center gap-2 bg-white p-1 rounded-md">
+        <div className="flex justify-between bg-orange-100 p-2 rounded-md font-bold">
+          <div className="flex items-center gap-2 bg-white p-2 rounded-md ">
             <Ruler />
             <p className="text-xs">
               {listing.listingDetail.size || "N/A"} sqft
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-white p-1 rounded-md">
+          <div className="flex items-center gap-2 bg-white p-2 rounded-md">
             <BathIcon />
             <p className="text-xs">
               {listing.bathroom + " "}
               {listing.bathroom === 1 ? "bath" : "baths"}
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-white p-1 rounded-md">
+          <div className="flex items-center gap-2 bg-white p-2 rounded-md">
             <BedDouble />
             <p className="text-xs">
               {listing.bedroom + " "}
@@ -135,7 +136,7 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">School</p>
               <span className="text-xs">
-                {listing.listingDetail.school || "N/A"}
+                {listing.listingDetail.school + " km" || "N/A"}
               </span>
             </div>
           </div>
@@ -144,7 +145,7 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">Bus Stop</p>
               <span className="text-xs">
-                {listing.listingDetail.bus || "N/A"}
+                {listing.listingDetail.bus + " km" || "N/A"}
               </span>
             </div>
           </div>
@@ -153,7 +154,7 @@ const SingleListingPage = () => {
             <div className="leading-none">
               <p className="text-sm font-semibold">Railway</p>
               <span className="text-xs">
-                {listing.listingDetail.railway || "N/A"}
+                {listing.listingDetail.railway + " km" || "N/A"}
               </span>
             </div>
           </div>
