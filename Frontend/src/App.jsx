@@ -21,7 +21,7 @@ import ListingPage from "@/pages/ListingPage";
 import SingleListingPage from "@/pages/SingleListingPage";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
 });
 
 function AppWrapper() {

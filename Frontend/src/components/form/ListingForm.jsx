@@ -17,7 +17,7 @@ const ListingForm = () => {
   const [images, setImages] = useState([]);
 
   const form = useFormCreateListing();
-  const { user } = useGetUserQuery();
+  const { auth } = useGetUserQuery();
   const { createNewListing, isLoading } = useCreateListing();
 
   const onSubmit = async (data) => {
@@ -25,7 +25,7 @@ const ListingForm = () => {
     listingData.images = images;
 
     await createNewListing({
-      userId: user.id,
+      userId: auth.user.id,
       listingData,
       listingDetail,
     });

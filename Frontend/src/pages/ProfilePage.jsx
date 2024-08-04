@@ -6,10 +6,10 @@ import { MailIcon, UserIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
-  const { user, isSignedIn } = useGetUserQuery();
+  const { auth } = useGetUserQuery();
   const { profileListings, isProfileLoading } = useProfileLisitngs(
-    user.id,
-    isSignedIn
+    auth.user.id,
+    auth.isSignedIn
   );
 
   if (isProfileLoading) return <Loader />;
@@ -21,16 +21,16 @@ const ProfilePage = () => {
           <h2 className="text-xl font-bold">User Information</h2>
           <div className="flex items-center gap-10">
             <img
-              src={user.profile_pic}
+              src={auth.user.profile_pic}
               alt="profile pic"
               className="w-20 h-20 rounded-sm object-cover"
             />
             <div className="flex flex-col gap-2">
               <span className="inline-flex gap-4">
-                <UserIcon />: <b>{user.userName}</b>
+                <UserIcon />: <b>{auth.user.userName}</b>
               </span>
               <span className="inline-flex gap-4">
-                <MailIcon />: <b>{user.email}</b>
+                <MailIcon />: <b>{auth.user.email}</b>
               </span>
             </div>
           </div>

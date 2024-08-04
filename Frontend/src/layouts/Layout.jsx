@@ -17,11 +17,14 @@ export function PublicLayout() {
 }
 
 export const ProtectedLayout = () => {
-  const { isLoading, isSignedIn } = useGetUserQuery();
+  const {
+    auth,
+    isLoading,
+  } = useGetUserQuery();
   const location = useLocation();
 
   if (isLoading) return <Loader />;
-  if (!isSignedIn)
+  if (!auth.isSignedIn)
     return (
       <Navigate
         to="/sign-in"

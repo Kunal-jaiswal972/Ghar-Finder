@@ -14,26 +14,19 @@ export const useGetUserQuery = () => {
   const { userId, isLoaded } = useAuth();
 
   const {
-    data: user,
+    data: auth,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["auth"],
     queryFn: () => getUser(userId),
-    enabled: !!userId && isLoaded,
+    enabled: isLoaded,
   });
 
-  if (userId === null)
-    return {
-      user: null,
-      isLoading: false,
-      isSignedIn: false,
-      isError: false,
-      error: null,
-    };
+  // console.log({ auth, isLoading, isError, error });
 
-  return { user, isLoading, isSignedIn: !!user, isError, error };
+  return { auth, isLoading, isError, error };
 };
 
 export const useGetGeoSpatialListingsQuery = (
@@ -71,7 +64,7 @@ export const useGetListingQuery = (ListingId) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["listings", { ListingId }],
+    queryKey: ["listing", { ListingId }],
     queryFn: () => getListing(ListingId),
   });
 

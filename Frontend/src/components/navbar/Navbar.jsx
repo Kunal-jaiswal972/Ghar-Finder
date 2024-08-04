@@ -10,7 +10,7 @@ import { ModeToggle } from "@/components/themes/mode-toggle";
 import { useGetUserQuery } from "@/services/queries";
 
 const Navbar = () => {
-  const { isSignedIn } = useGetUserQuery();
+  const { auth } = useGetUserQuery();
   const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
 
   return (
@@ -39,7 +39,7 @@ const Navbar = () => {
 
       <div className="flex flex-2 items-center justify-end h-full px-2 gap-4">
         <ModeToggle />
-        {isSignedIn ? (
+        {auth?.isSignedIn? (
           <div className="hidden sm:flex items-center justify-between gap-4">
             <UserButton afterSignOutUrl="/" />
             <Button variant="outline" size="icon">

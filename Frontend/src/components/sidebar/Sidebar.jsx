@@ -11,7 +11,7 @@ import { useGetUserQuery } from "@/services/queries";
 const Sidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isSignedIn, user } = useGetUserQuery();
+  const { auth } = useGetUserQuery();
 
   const signOutOptions = [
     { title: "Sign In", link: "/sign-in" },
@@ -22,10 +22,10 @@ const Sidebar = () => {
     <div className="space-y-4 flex flex-col h-full text-primary bg-secondary">
       <div className="p-3 flex flex-1 justify-between flex-col">
         <div className="space-y-2">
-          {isSignedIn ? (
+          {auth.isSignedIn ? (
             <div className="flex items-center gap-2 mb-5">
               <UserButton afterSignOutUrl="/" />
-              {user.firstName}
+              {auth.user.firstName}
             </div>
           ) : (
             signOutOptions.map((items) => (
@@ -48,7 +48,7 @@ const Sidebar = () => {
           ))}
         </div>
 
-        {isSignedIn && (
+        {auth.isSignedIn && (
           <SignOutButton signOutOptions={{ redirectUrl: "/sign-in" }}>
             <Button variant="destructive" className="space-x-2">
               <span>Log Out</span>

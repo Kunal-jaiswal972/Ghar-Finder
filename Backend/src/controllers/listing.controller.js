@@ -6,7 +6,7 @@ export const getListings = async (req, res) => {
   try {
     const posts = await prisma.listing.findMany({
       where: {
-        city: query.city || undefined,
+        city: query.city.toLowerCase() || undefined,
         type: query.type || undefined,
         property: query.property || undefined,
         bedroom: parseInt(query.bedroom) || undefined,
@@ -59,7 +59,6 @@ export const getListing = async (req, res) => {
 
 export const createListing = async (req, res) => {
   const { listingData, listingDetail, userId } = req.body;
-  const { latitude, longitude, ...rest } = listingData;
 
   try {
     const user = await prisma.user.findUnique({
@@ -73,6 +72,7 @@ export const createListing = async (req, res) => {
     const newListing = await prisma.listing.create({
       data: {
         ...listingData,
+        city: listingData.city.toLowerCase(),
         location: {
           type: "Point",
           coordinates: [listingData.longitude, listingData.latitude],

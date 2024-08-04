@@ -22,7 +22,7 @@ import Error from "@/components/Error";
 
 const SingleListingPage = () => {
   const { id } = useParams();
-  const { user, isLoading } = useGetUserQuery();
+  const { auth, isLoading } = useGetUserQuery();
   const { listing, isListingLoading, isError } = useGetListingQuery(id);
 
   if (isListingLoading || isLoading) return <Loader />;
@@ -164,14 +164,14 @@ const SingleListingPage = () => {
           <Map data={[listing]} height="h-[250px]" />
         </div>
 
-        {user && (
+        {auth.user && (
           <div className="grid grid-cols-1 md:grid-cols-2 bg-orange-100 p-3 rounded-md gap-4">
-            <SaveBtn user={user} listingId={id} />
+            <SaveBtn user={auth.user} listingId={id} />
             <Button
               variant="outline"
               size="sm"
               className="flex gap-2"
-              disabled={!user || !user.id}
+              disabled={!auth.user}
             >
               <MessageSquare />
               <span className="block md:hidden">Send a message</span>
